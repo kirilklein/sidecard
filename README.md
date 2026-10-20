@@ -41,6 +41,7 @@ Confirm it loaded: `/plugin` shows `1 mod active · sidecard`. A mod is code tha
 | `/sidecard review [n]` | List the last `n` cards shown (default 10), newest first, with answers and how well you likely remember each |
 | `/sidecard on` / `off` | Enable or disable all cards |
 | `/sidecard <category>` | Toggle a category, e.g. `/sidecard french` |
+| `/sidecard only <category…>` | Show only these categories and turn the rest off, e.g. `/sidecard only llm` |
 | `/sidecard <category> key=value` | Set an input, e.g. `/sidecard french level=B1` |
 | `/sidecard generate on\|off` | Fresh cards from Claude Code's Haiku, on or off |
 | `/sidecard reload` | Rescan category files |

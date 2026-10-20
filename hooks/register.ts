@@ -25,11 +25,12 @@ type Stats = { calls: number; cards: number; outputTokens: number; lastError: st
 type Shown = { card: Card; cat: string; at: number }
 
 const HELP =
-  'Usage: /sidecard [menu|on|off|now|review [n]|status|generate on|off|reload|<category> [key=value]]\n' +
+  'Usage: /sidecard [menu|on|off|now|review [n]|only <category...>|status|generate on|off|reload|<category> [key=value]]\n' +
   '  (no args)    open the category menu\n' +
   '  now          show a card right away\n' +
   '  review [n]   list the last n cards shown (default 10), with how well you likely remember them\n' +
   '  <category>   toggle it; add key=value to set an input, e.g. french level=B1\n' +
+  '  only <category...>  show only these categories, e.g. only llm\n' +
   '  generate     use Claude Code\'s Haiku to write fresh cards (uses your plan quota)\n' +
   '  reload       rescan category files'
 
@@ -225,7 +226,7 @@ export const register: Register = (on) => {
     await $.command.register({
       name: 'sidecard',
       description: 'Spinner learning cards: menu, on/off, now, review',
-      argumentHint: '[menu|on|off|now|review [n]|<category>]',
+      argumentHint: '[menu|on|off|now|review [n]|only <category...>|<category>]',
       immediate: true,
     })
     return next(e)
@@ -273,6 +274,16 @@ export const register: Register = (on) => {
     }
     if (head === 'now') {
       return (await showNow($)) ? {} : { text: 'No cards available. Enable a category with /sidecard.' }
+    }
+    if (head === 'only') {
+      await discover($)
+      const unknown = rest.filter((r) => !cats.some((c) => c.name === r))
+      if (rest.length === 0 || unknown.length) return { text: 'Usage: /sidecard only <category...>   one or more of: ' + cats.map((c) => c.name).join(', ') }
+      settings.off = cats.filter((c) => !rest.includes(c.name)).map((c) => c.name)
+      current = band = null
+      await save($)
+      for (const c of cats) if (isOn(c.name)) void refill($, c)
+      return { text: status() }
     }
     const cat = cats.find((c) => c.name === head)
     if (cat) {

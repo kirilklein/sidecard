@@ -60,3 +60,18 @@ test('/sidecard review with no history says there are no cards yet', async ($, o
   mock.env(on, { HOME: '/nonexistent' })
   expect(await review($, 'review')).toContain('No cards yet')
 })
+
+const cat = (name: string) => `---\nname: ${name}\ntitle: ${name}\n---\nTeach ${name}.`
+
+test('/sidecard only keeps just the named categories on; unknown names say usage', async ($, on) => {
+  mock.store(on, {})
+  mock.env(on, { HOME: '/nonexistent' })
+  on('fs.list', async ($, e) => ({ value: e.path.startsWith('/nonexistent') ? [] : ['french', 'llm'].map((n) => ({ name: n + '.md', kind: 'file' })) }) as never)
+  on('fs.read', async ($, e) => ({ value: cat(e.path.split('/').pop()!.replace('.md', '')) }))
+  await review($, 'generate off')
+  const text = await review($, 'only llm')
+  expect(text).toContain('✓ llm')
+  expect(text).toContain('☐ french')
+  expect(await review($, 'only nope')).toContain('Usage')
+  expect(await review($, 'only')).toContain('Usage')
+})
