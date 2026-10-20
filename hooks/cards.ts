@@ -432,17 +432,17 @@ export const cards: Card[] = [
   "body": "How many people do you need for a better\nthan 50% chance that two share a birthday?\n\nThink for a moment…",
   "reveal": {
    "afterSeconds": 8,
-   "body": "23. That is already 253 pairs, each matching\nwith probability 1/365."
+   "body": "23 (exactly 50.7%). It feels low, but 23 people\nform 253 pairs, and any one pair can match."
   }
  },
  {
   "id": "probability-recall-monty-hall",
   "category": "probability",
   "value": 2,
-  "body": "Monty Hall: you pick door 1. The host, who\nknows where the car is, opens door 3: a goat.\nShould you switch?\n\nThink for a moment…",
+  "body": "Monty Hall: you pick door 1. The host knows\nwhere the car is and always opens a goat door\nyou did not pick. Door 3 opens: a goat.\nShould you switch?\n\nThink for a moment…",
   "reveal": {
    "afterSeconds": 8,
-   "body": "Yes, switching wins 2/3 of the time.\nYour first pick was right only 1/3 of the time."
+   "body": "Yes: switching wins 2/3. Your pick is right 1/3\nof the time, and the host's rule never changes that."
   }
  },
  {
